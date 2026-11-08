@@ -1,15 +1,19 @@
 # views/buku_view.py
 import customtkinter as ctk
 from tkinter import ttk
+import tkinter as tk
 
 class BukuView(ctk.CTk):
-    def __init__(self):
+    def __init__(self, role=None):
         super().__init__()
         self.title("Sistem Manajemen Perpustakaan")
         self.geometry("950x500")
         self.config(bg="#f0f0f0")
 
-        # ================= FRAME KIRI: FORM INPUT =================
+        # Simpan role untuk keperluan otorisasi
+        self.role = role
+
+        # ==================== FRAME KIRI: FORM INPUT ====================
         self.frame_kiri = ctk.CTkFrame(self, fg_color="#ffffff", width=300)
         self.frame_kiri.pack(side="left", fill="y", padx=20, pady=20)
 
@@ -34,7 +38,11 @@ class BukuView(ctk.CTk):
         self.btn_delete = ctk.CTkButton(self.frame_kiri, text="Hapus Data (Delete)", fg_color="red", hover_color="darkred", width=240)
         self.btn_delete.pack(pady=5, padx=15, fill="x")
 
-        # ================= FRAME KANAN: TABEL / DAFTAR BUKU =================
+        # Tombol Logout (Tugas No. 3)
+        self.btn_logout = ctk.CTkButton(self.frame_kiri, text="Logout", fg_color="gray", hover_color="darkgray", width=240, command=self.logout_action)
+        self.btn_logout.pack(pady=(20, 5), padx=15, fill="x")
+
+        # ==================== FRAME KANAN: TABEL / DAFTAR BUKU ====================
         self.frame_kanan = ctk.CTkFrame(self, fg_color="#ffffff")
         self.frame_kanan.pack(side="right", fill="both", expand=True, padx=(0, 20), pady=20)
 
@@ -50,9 +58,9 @@ class BukuView(ctk.CTk):
 
         # Inisialisasi ttk.Treeview untuk Tabel Data Buku
         self.tabel_buku = ttk.Treeview(
-            table_frame, 
-            columns=("id", "judul", "penulis", "tahun"), 
-            show="headings", 
+            table_frame,
+            columns=("id", "judul", "penulis", "tahun"),
+            show="headings",
             yscrollcommand=tree_scroll.set
         )
         tree_scroll.config(command=self.tabel_buku.yview)
@@ -68,5 +76,17 @@ class BukuView(ctk.CTk):
         self.tabel_buku.column("judul", width=220, anchor="w")
         self.tabel_buku.column("penulis", width=150, anchor="w")
         self.tabel_buku.column("tahun", width=70, anchor="center")
-
         self.tabel_buku.pack(fill="both", expand=True)
+
+        # ==================== ATURAN OTORISASI (Tugas No. 2) ====================
+        if self.role == 'anggota':
+            self.btn_update.configure(state="disabled")
+            self.btn_delete.configure(state="disabled")
+
+    def logout_action(self):
+        # Tugas No. 3: Menutup jendela perpustakaan dan kembali ke LoginView
+        self.destroy()
+        from views.login_view import LoginView
+        root_login = ctk.CTk() # Atau tk.Tk() menyesuaikan project kamu
+        app = LoginView(root_login)
+        root_login.mainloop()
