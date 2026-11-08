@@ -48,7 +48,15 @@ jobs:
         cursor = conn.cursor()
         cursor.execute('CREATE DATABASE IF NOT EXISTS db_perpustakaan;')
         cursor.execute('USE db_perpustakaan;')
-        cursor.execute('CREATE TABLE IF NOT EXISTS buku (id INT AUTO_INCREMENT PRIMARY KEY, judul VARCHAR(255), penulis VARCHAR(255));')
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS buku (
+                id_buku INT AUTO_INCREMENT PRIMARY KEY,
+                judul VARCHAR(255),
+                penulis VARCHAR(255),
+                tahun INT,
+                penerbit VARCHAR(255)
+            );
+        ''')
         conn.close()
         "
         python -m pytest -v
