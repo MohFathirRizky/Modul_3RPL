@@ -10,7 +10,6 @@ jobs:
   build-and-test:
     runs-on: ubuntu-latest
     
-    # Tambahkan service MySQL di sini
     services:
       mysql:
         image: mysql:8.0
@@ -37,5 +36,10 @@ jobs:
         pip install --prefer-binary -r requirements.txt
 
     - name: 4. Menjalankan Automated Unit Testing (Pytest)
+      env:
+        DB_HOST: 127.0.0.1
+        DB_USER: root
+        DB_PASSWORD: root
+        DB_NAME: db_perpustakaan
       run: |
         python -m pytest -v
